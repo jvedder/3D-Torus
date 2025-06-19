@@ -78,7 +78,7 @@ step = 0
 for phi in np.linspace(0, 2.0*np.pi, phi_steps):
     step = step +1
     print(step, round(max_intensity,2))
-    for theta in np.linspace(-np.pi/2.0, np.pi/2.0, theta_steps):
+    for theta in np.linspace(0.0, np.pi, theta_steps):
 
         #point on torus    
         point, normal = torus_point_and_normal(phi, theta)
