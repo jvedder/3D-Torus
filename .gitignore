@@ -1,0 +1,5 @@
+#ignore the Examples Folder
+/examples/
+
+#ignore image files (for now)
+*.png
