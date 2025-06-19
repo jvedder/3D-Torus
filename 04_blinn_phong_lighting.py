@@ -24,6 +24,9 @@ view_pos  = np.array([ 0.0,  0.0, 25.0])
 R=10.0
 r=3.0
 
+# Pixels per geometry unit
+pix_scale = 30
+
 def torus_point_and_normal(phi, theta):
     # phi is around the torus
     # theta is around the tube
@@ -62,28 +65,31 @@ def blinn_phong_illumination(point, normal):
     return ambient + diffuse + specular
 
 
-imax = 0.0
-imin = 9999.0
-
+max_intensity = 0.0
 grey = np.full( (1024, 1024), 192, dtype=np.uint8)
 
-n = 0
-for phi in np.linspace(0, 2*np.pi, 4000):
-    n = n +1
-    print(n, round(imin,2), round(imax,2))
-    for theta in np.linspace(-np.pi/2, np.pi/2, 400):
+phi_steps   = int(np.ceil( 2.0 * np.pi * (R+r) * pix_scale * 1.414))
+theta_steps = int(np.ceil( np.pi * r * pix_scale * 1.414))
+
+print ('phi steps  ', phi_steps)
+print ('theta steps', theta_steps)
+
+step = 0
+for phi in np.linspace(0, 2.0*np.pi, phi_steps):
+    step = step +1
+    print(step, round(max_intensity,2))
+    for theta in np.linspace(-np.pi/2.0, np.pi/2.0, theta_steps):
 
         #point on torus    
         point, normal = torus_point_and_normal(phi, theta)
 
         # Compute illumination
         intensity = blinn_phong_illumination(point, normal)
-        imax = max(imax,intensity)
-        imin = min(imin,intensity)
+        max_intensity = max(max_intensity,intensity)
 
         #set pixel
-        x = 512 + int(point[0] * 30)
-        y = 512 + int(point[1] * 30)
+        x = 512 + int(point[0] * pix_scale)
+        y = 512 + int(point[1] * pix_scale)
         i = 64 + int(192 * intensity)
         i = min(max(i,0),255)
         grey[y,x] = i
