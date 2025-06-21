@@ -1,3 +1,6 @@
+#  Copyright (c) 2025 John Vedder
+#  MIT License
+
 from shapely.geometry import Polygon
 from shapely import affinity
 import matplotlib.pyplot as plt

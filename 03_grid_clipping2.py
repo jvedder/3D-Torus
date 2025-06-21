@@ -1,3 +1,6 @@
+#  Copyright (c) 2025 John Vedder
+#  MIT License
+
 from shapely import box
 from shapely.geometry import Polygon
 import numpy as np

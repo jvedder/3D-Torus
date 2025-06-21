@@ -1,3 +1,6 @@
+#  Copyright (c) 2025 John Vedder
+#  MIT License
+
 from shapely.plotting import plot_polygon
 from shapely.geometry import Polygon
 import matplotlib.pyplot as plt
