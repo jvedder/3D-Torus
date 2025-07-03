@@ -28,6 +28,11 @@ r=3.0
 # Pixels per geometry unit
 pix_scale = 30
 
+# Define text size
+text_size = 32
+text_line_height = 40
+text_color = 0
+
 def torus_point_and_normal(phi, theta):
     # phi is around the torus
     # theta is around the tube
@@ -77,17 +82,19 @@ max_intensity = 0.0
 min_grey = 9999
 max_grey = 0
 
-grey = np.full( (1024, 1024), 192, dtype=np.uint8)
+# Size is (y,x), 192 is default background color (#C0C0C0)
+grey = np.full( (1024 + 3*text_line_height, 1024), 192, dtype=np.uint8)
 
+# Compute angle step size to cove all pixels
 phi_steps   = int(np.ceil( 2.0 * np.pi * (R+r) * pix_scale * 1.414))
 theta_steps = int(np.ceil( np.pi * r * pix_scale * 1.414))
 
-print ('phi steps  ', phi_steps)
-print ('theta steps', theta_steps)
+print ('Phi Steps:', phi_steps)
+print ('Theta Steps:', theta_steps)
 
 step = 0
 start_time = datetime.now()
-print("Start Time", start_time)
+print("Start Time:", start_time)
 for phi in np.linspace(0, 2.0*np.pi, phi_steps):
     for theta in np.linspace(0.0, np.pi, theta_steps):
 
@@ -111,34 +118,41 @@ for phi in np.linspace(0, 2.0*np.pi, phi_steps):
         y = 512 + int(point[1] * pix_scale)
         grey[y,x] = g
 
+end_time = datetime.now()
+print("End Time:", end_time)
+run_time_sec = (end_time-start_time).total_seconds()
+print("Compute Run Time:", round(run_time_sec,3) ,"sec.") 
 
-print("Intensity Range",round(min_intensity,2), round(max_intensity,2))
-print("Grey Range",min_grey, max_grey)
+print("Intensity Range:",round(min_intensity,2), round(max_intensity,2))
+print("Grey Range:",min_grey, max_grey)
 
 print("Creating Image...")
 image = Image.fromarray(grey, mode='L')
 
 # Label Image
 print("Labeling Image...")
-text = 'color = int(128 * np.sin(16*phi)) + 128; '
-text += 'g = int(color/3) + int(192 * intensity); '
-text += 'Intensity: (' + str(round(min_intensity,2)) +', ' + str(round(max_intensity,2)) + '); '
-text += 'Grey: (' + str(min_grey) + ', ' + str(max_grey) + '); ' 
-
 draw = ImageDraw.Draw(image)
-text_size = 32
-text_position = (10, 1024 - text_size - 10)
-text_color = 255
 font = ImageFont.truetype("arial.ttf", text_size)
+
+text = datetime.now().strftime('%m/%d/%Y %H:%M')
+text_position = (10, 10)
+draw.text(text_position, text, fill=text_color, font=font)
+
+text = 'color = int(128 * np.sin(16*phi)) + 128'
+text_position = (10, 1024 + 0 * text_line_height)
+draw.text(text_position, text, fill=text_color, font=font)
+
+text = 'grey = int(color/3) + int(192 * intensity)'
+text_position = (10, 1024 + 1 * text_line_height)
+draw.text(text_position, text, fill=text_color, font=font)
+
+text = 'Intensity: (' + str(round(min_intensity,2)) +', ' + str(round(max_intensity,2)) + '); '
+text += 'Grey: (' + str(min_grey) + ', ' + str(max_grey) + '); ' 
+text_position = (10, 1024 + 2 * text_line_height)
 draw.text(text_position, text, fill=text_color, font=font)
 
 print("Saving Image...")
-image.save('torus.png')
-
-end_time = datetime.now()
-print("End Time", end_time)
-run_time_sec = (end_time-start_time).total_seconds()
-print("Run time", round(run_time_sec,3) ,"sec.") 
+image.save('torus-stripes.png')
 
 print("Done.")
 
