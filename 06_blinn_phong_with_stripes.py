@@ -50,9 +50,9 @@ def torus_point_and_normal(phi, theta):
     normal = np.array([nx, ny, nz])
 
     #compute black/white stripes 
-    color = int(128 * np.sin(16 * phi)) + 128
-    color = min(max(color,0),255)
-    
+    #color = int(128 * np.sin(16 * phi)) + 128
+    #color = min(max(color,0),255)
+    color = 255 if np.sin(16 * phi) > 0.0 else 0
     
     #return point, normal / np.linalg.norm(normal)  # Just in case
     return (point, normal, color) 
